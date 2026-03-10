@@ -23,19 +23,23 @@ import {
   Video,
 } from "lucide-react"
 
+import { useLanguage } from "@/lib/i18n/LanguageContext"
+import { LanguageSwitcher } from "@/components/language-switcher"
+
 const patientNavItems = [
-  { href: "/patient", label: "Tableau de bord", icon: Home },
-  { href: "/patient/timeline", label: "Mon parcours", icon: CalendarDays },
-  { href: "/patient/check-in", label: "Check-in quotidien", icon: ClipboardCheck },
-  { href: "/patient/journal", label: "Journal", icon: BookOpen },
-  { href: "/patient/virtual-tour", label: "Visite du bloc", icon: Video },
-  { href: "/patient/library", label: "Bibliothèque", icon: Library },
-  { href: "/patient/messages", label: "Messages", icon: MessageSquare },
-  { href: "/patient/profile", label: "Profil", icon: User },
+  { href: "/patient", labelKey: "navigation.patientDashboard", icon: Home },
+  { href: "/patient/timeline", labelKey: "navigation.patientDashboard", icon: CalendarDays }, // TODO: Add specific keys if needed
+  { href: "/patient/check-in", labelKey: "navigation.dailyCheckIn", icon: ClipboardCheck },
+  { href: "/patient/journal", labelKey: "navigation.patientDashboard", icon: BookOpen },
+  { href: "/patient/virtual-tour", labelKey: "navigation.patientDashboard", icon: Video },
+  { href: "/patient/library", labelKey: "navigation.patientDashboard", icon: Library },
+  { href: "/patient/messages", labelKey: "navigation.messages", icon: MessageSquare },
+  { href: "/patient/profile", labelKey: "navigation.patientDashboard", icon: User },
 ]
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
+  const { t } = useLanguage()
 
   return (
     <nav className="flex flex-col gap-1">
@@ -54,7 +58,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             )}
           >
             <item.icon className="h-5 w-5" />
-            {item.label}
+            {t(item.labelKey)}
             {isActive && <ChevronRight className="ml-auto h-4 w-4" />}
           </Link>
         )
@@ -64,6 +68,8 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function Sidebar() {
+  const { t } = useLanguage()
+
   return (
     <aside className="hidden h-screen w-64 flex-col border-r border-border bg-card lg:flex">
       {/* Logo */}
@@ -83,11 +89,14 @@ function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-border p-4">
+      <div className="border-t border-border p-4 flex flex-col gap-2">
+        <div className="flex w-full justify-start items-center px-4 py-2">
+          <LanguageSwitcher />
+        </div>
         <Link href="/">
           <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground">
             <LogOut className="h-5 w-5" />
-            Log out
+            {t("navigation.logOut")}
           </Button>
         </Link>
       </div>
@@ -97,6 +106,7 @@ function Sidebar() {
 
 function MobileHeader() {
   const [open, setOpen] = useState(false)
+  const { t } = useLanguage()
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
@@ -107,36 +117,40 @@ function MobileHeader() {
         <span className="text-lg font-semibold text-foreground">UroCare</span>
       </div>
 
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
-          <div className="flex h-16 items-center gap-2 border-b border-border px-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Heart className="h-5 w-5 text-primary-foreground" />
+      <div className="flex items-center gap-2">
+        <LanguageSwitcher />
+
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-0">
+            <div className="flex h-16 items-center gap-2 border-b border-border px-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+                <Heart className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="text-lg font-semibold text-foreground">UroCare</span>
             </div>
-            <span className="text-lg font-semibold text-foreground">UroCare</span>
-          </div>
-          <div className="flex flex-1 flex-col gap-4 p-4">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Patient Portal
+            <div className="flex flex-1 flex-col gap-4 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Patient Portal
+              </div>
+              <NavLinks onNavigate={() => setOpen(false)} />
             </div>
-            <NavLinks onNavigate={() => setOpen(false)} />
-          </div>
-          <div className="border-t border-border p-4">
-            <Link href="/">
-              <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground">
-                <LogOut className="h-5 w-5" />
-                Log out
-              </Button>
-            </Link>
-          </div>
-        </SheetContent>
-      </Sheet>
+            <div className="border-t border-border p-4">
+              <Link href="/">
+                <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground">
+                  <LogOut className="h-5 w-5" />
+                  {t("navigation.logOut")}
+                </Button>
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </header>
   )
 }

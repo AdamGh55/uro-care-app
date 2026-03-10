@@ -34,6 +34,8 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { InvitePatientDialog } from "@/components/doctor/invite-patient-dialog";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default function DoctorDashboard() {
     type CheckIn = {
@@ -43,6 +45,7 @@ export default function DoctorDashboard() {
         status: 'alert' | 'normal';
     };
 
+    const { t } = useLanguage();
     const [recentCheckins, setRecentCheckins] = useState<CheckIn[]>([]);
 
     const [patients, setPatients] = useState([
@@ -91,6 +94,7 @@ export default function DoctorDashboard() {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <LanguageSwitcher />
                     <Button variant="ghost" size="icon" className="relative">
                         <Bell className="h-5 w-5 text-muted-foreground" />
                         <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full"></span>
@@ -120,7 +124,7 @@ export default function DoctorDashboard() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-red-500">
                                 <LogOut className="mr-2 h-4 w-4" />
-                                <Link href="/login">Se déconnecter</Link>
+                                <Link href="/login">{t('navigation.logOut')}</Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -131,7 +135,7 @@ export default function DoctorDashboard() {
                 {/* Welcome Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tableau de bord</h1>
+                        <h1 className="text-3xl font-bold tracking-tight">{t('navigation.doctorDashboard')}</h1>
                         <p className="text-muted-foreground">
                             Aperçu de vos patients et interventions à venir.
                         </p>

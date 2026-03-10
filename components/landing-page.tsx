@@ -9,13 +9,16 @@ import { DnaSwirl } from "@/components/dna-swirl"
 import { ArrowRight, Activity, MessageSquare, ShieldCheck, UserCheck, Calendar, Plus } from "lucide-react"
 
 import { ModeToggle } from "@/components/mode-toggle"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 import { motion } from "framer-motion"
 
 import * as React from "react"
 
 export function LandingPage() {
-  const [activeValue, setActiveValue] = React.useState('Collaboration')
+  const [activeValue, setActiveValue] = React.useState('collaboration')
+  const { t } = useLanguage()
 
   return (
     <div className="min-h-screen relative overflow-x-hidden transition-colors duration-300">
@@ -79,23 +82,24 @@ export function LandingPage() {
           </Link>
           <nav className="ml-auto flex gap-6 sm:gap-8 items-center">
             <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hidden md:block" href="#">
-              Features
+              {t('landing.nav.features')}
             </Link>
             <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hidden md:block" href="#">
-              Clinicians
+              {t('landing.nav.clinics')}
             </Link>
             <div className="hidden md:flex items-center gap-4">
               <Link className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors" href="#">
-                Contact
+                {t('common.contact')}
               </Link>
             </div>
           </nav>
           <div className="ml-6 flex items-center gap-2 sm:gap-4">
+            <LanguageSwitcher />
             {/* Dark Mode Toggle */}
             <ModeToggle />
 
             <Link href="/login" className="hidden sm:block">
-              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">Log In</Button>
+              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">{t('common.logIn')}</Button>
             </Link>
           </div>
         </header>
@@ -113,24 +117,24 @@ export function LandingPage() {
                 <div className="space-y-4">
                   <div className="inline-flex items-center rounded-full border border-primary/30 dark:border-primary/40 bg-primary/10 dark:bg-primary/20 px-3 py-1 text-sm font-medium text-primary dark:text-primary-foreground backdrop-blur-sm">
                     <span className="flex h-2 w-2 rounded-full bg-primary dark:bg-white mr-2 animate-pulse"></span>
-                    Trusted by 10,000+ Patients
+                    {t('landing.hero.trusted')}
                   </div>
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-primary">
-                    Your Trusted Partner in Modern Healthcare.
+                    {t('landing.hero.title')}
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl leading-relaxed">
-                    We connect patients and specialists effortlessly. From pre-op preparation to full recovery, experience a smarter, safer journey.
+                    {t('landing.hero.subtitle')}
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 min-[400px]:flex-row w-full min-[400px]:w-auto">
                   <Link href="/onboarding" className="w-full min-[400px]:w-auto">
                     <Button size="lg" className="w-full min-[400px]:w-auto h-14 px-8 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 text-primary-foreground text-lg transition-transform hover:scale-105">
-                      Start Here <ArrowRight className="ml-2 h-5 w-5" />
+                      {t('landing.hero.cta')} <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
                   <Link href="#" className="w-full min-[400px]:w-auto">
                     <Button size="lg" variant="outline" className="w-full min-[400px]:w-auto h-14 px-8 rounded-full border-primary/20 hover:bg-primary/5 text-lg">
-                      Watch Demo
+                      {t('landing.hero.demo')}
                     </Button>
                   </Link>
                 </div>
@@ -139,15 +143,15 @@ export function LandingPage() {
                 <div className="pt-8 flex items-center gap-8 text-muted-foreground dark:text-slate-400">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="h-5 w-5 text-primary/60 dark:text-primary" />
-                    <span className="text-sm font-medium">HIPAA Compliant</span>
+                    <span className="text-sm font-medium">{t('landing.hero.badges.hipaa')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <UserCheck className="h-5 w-5 text-primary/60 dark:text-primary" />
-                    <span className="text-sm font-medium">Verified Specialists</span>
+                    <span className="text-sm font-medium">{t('landing.hero.badges.specialists')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Activity className="h-5 w-5 text-primary/60 dark:text-primary" />
-                    <span className="text-sm font-medium">24/7 Monitoring</span>
+                    <span className="text-sm font-medium">{t('landing.hero.badges.monitoring')}</span>
                   </div>
                 </div>
               </div>
@@ -172,11 +176,11 @@ export function LandingPage() {
                 {/* Left Column: Stats & Navigation (35-40%) */}
                 <div className="lg:col-span-5 flex flex-col gap-12 relative">
                   <div className="space-y-6">
-                    <span className="text-sm font-semibold tracking-widest text-primary uppercase">About Us</span>
+                    <span className="text-sm font-semibold tracking-widest text-primary uppercase">{t('landing.impact.tag')}</span>
 
                     <div className="flex items-center gap-4">
                       <div className="bg-primary/10 backdrop-blur-md px-4 py-2 rounded-full border border-primary/20 text-sm font-medium text-primary-foreground">
-                        Our Impact
+                        {t('landing.impact.badge')}
                       </div>
                       <div className="flex gap-2">
                         <Button size="icon" variant="outline" className="rounded-full border-primary/20 bg-background/50 hover:bg-primary/10"><ArrowRight className="h-4 w-4 rotate-180" /></Button>
@@ -188,9 +192,8 @@ export function LandingPage() {
                       <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-foreground">
                         50+
                       </h2>
-                      <p className="text-xl font-medium text-muted-foreground leading-snug">
-                        Healthcare Professionals <br />
-                        Supporting Lives Worldwide
+                      <p className="text-xl font-medium text-muted-foreground leading-snug whitespace-pre-line">
+                        {t('landing.impact.stats')}
                       </p>
                     </div>
                   </div>
@@ -204,7 +207,7 @@ export function LandingPage() {
                       <Image src="/images/medical-team.png" alt="Doctor" fill className="object-cover" />
                     </div>
                     <p className="text-xl md:text-2xl leading-relaxed font-light text-slate-200">
-                      <span className="font-semibold text-white">UroCare Clinic</span> connects doctors and patients effortlessly, providing smarter, safer, and compassionate healthcare from diagnosis to full recovery.
+                      <span className="font-semibold text-white">{t('landing.impact.desc1')}</span>{t('landing.impact.desc2')}
                     </p>
                   </div>
 
@@ -217,12 +220,12 @@ export function LandingPage() {
                           <Activity className="h-6 w-6" />
                         </div>
                         <div className="bg-white/5 text-[10px] font-medium px-3 py-1 rounded-full border border-white/10 uppercase tracking-wide group-hover:bg-primary/20 group-hover:border-primary/30 transition-colors">
-                          Connected Care
+                          {t('landing.impact.cards.c1Tag')}
                         </div>
                       </div>
-                      <h3 className="text-lg font-semibold mb-3 text-white group-hover:text-primary transition-colors">Smart Care</h3>
+                      <h3 className="text-lg font-semibold mb-3 text-white group-hover:text-primary transition-colors">{t('landing.impact.cards.c1Title')}</h3>
                       <p className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">
-                        Smart digital health tracking ensures accurate insights and better outcomes.
+                        {t('landing.impact.cards.c1Desc')}
                       </p>
                     </div>
 
@@ -233,12 +236,12 @@ export function LandingPage() {
                           <ShieldCheck className="h-6 w-6" />
                         </div>
                         <div className="bg-white/5 text-[10px] font-medium px-3 py-1 rounded-full border border-white/10 uppercase tracking-wide group-hover:bg-emerald-500/20 group-hover:border-emerald-500/30 transition-colors">
-                          Data Privacy
+                          {t('landing.impact.cards.c2Tag')}
                         </div>
                       </div>
-                      <h3 className="text-lg font-semibold mb-3 text-white group-hover:text-emerald-400 transition-colors">Secure Data</h3>
+                      <h3 className="text-lg font-semibold mb-3 text-white group-hover:text-emerald-400 transition-colors">{t('landing.impact.cards.c2Title')}</h3>
                       <p className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">
-                        Protecting patient data through secure, HIPAA-compliant digital health systems.
+                        {t('landing.impact.cards.c2Desc')}
                       </p>
                     </div>
                   </div>
@@ -258,14 +261,14 @@ export function LandingPage() {
             <div className="container mx-auto px-4 md:px-6">
               <div className="mb-16">
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl max-w-2xl text-foreground transition-colors">
-                  A Simplified Path to <br /> Comprehensive Medical Care
+                  {t('landing.values.title1')} <br /> {t('landing.values.title2')}
                 </h2>
               </div>
 
               <div className="grid lg:grid-cols-12 gap-12">
                 {/* Interactive List */}
                 <div className="lg:col-span-4 flex flex-col justify-center space-y-2 order-2 lg:order-1">
-                  {['Compassion', 'Collaboration', 'Transparency', 'Flexibility', 'Excellence'].map((item) => (
+                  {['compassion', 'collaboration', 'transparency', 'flexibility', 'excellence'].map((item) => (
                     <button
                       key={item}
                       onClick={() => setActiveValue(item)}
@@ -274,7 +277,7 @@ export function LandingPage() {
                         : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 dark:hover:bg-primary/5'
                         }`}
                     >
-                      {item}
+                      {t(`landing.values.items.${item}` as any)}
                     </button>
                   ))}
                 </div>
@@ -311,23 +314,19 @@ export function LandingPage() {
 
                     <div className="relative z-10">
                       <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-6 leading-tight transition-colors">
-                        {activeValue === 'Compassion' && "We treat every patient with the same care we'd give our own family."}
-                        {activeValue === 'Collaboration' && "Your entire care team works together in realtime sync."}
-                        {activeValue === 'Transparency' && "Clear pricing, clear steps. No hidden surprises, ever."}
-                        {activeValue === 'Flexibility' && "Care that adapts to your schedule, not the other way around."}
-                        {activeValue === 'Excellence' && "World-class specialists committed to the best possible outcomes."}
+                        {t(`landing.values.descriptions.${activeValue}` as any)}
                       </h3>
                       <p className="text-slate-600 dark:text-blue-100 text-lg transition-colors">
-                        We believe {activeValue.toLowerCase()} is the foundation of modern healing.
+                        {t('landing.values.foundation').replace('{value}', t(`landing.values.items.${activeValue}` as any).toLowerCase())}
                       </p>
                     </div>
 
                     <div className="flex gap-2 flex-wrap relative z-10 mt-6 md:mt-0">
                       <div className="px-4 py-2 rounded-full bg-primary/10 dark:bg-primary/30 backdrop-blur-md text-primary dark:text-white text-sm font-medium border border-primary/10 dark:border-primary/20">
-                        {activeValue}
+                        {t(`landing.values.items.${activeValue}` as any)}
                       </div>
                       <div className="px-4 py-2 rounded-full bg-muted/50 dark:bg-primary/10 backdrop-blur-md text-muted-foreground dark:text-slate-200 text-sm font-medium border border-border/50 dark:border-primary/10">
-                        UroCare Standard
+                        {t('landing.values.standard')}
                       </div>
                     </div>
                   </motion.div>
@@ -340,16 +339,16 @@ export function LandingPage() {
           <section className="w-full py-24">
             <div className="container mx-auto px-4 md:px-6">
               <div className="text-center mb-12">
-                <span className="text-primary font-medium tracking-wider uppercase text-sm">Approach</span>
-                <h2 className="text-3xl font-bold mt-2">The UroCare Total Care™ Model</h2>
-                <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">Providing patient-centered care through expert guidance, innovative solutions, and personalized support every step of the way.</p>
+                <span className="text-primary font-medium tracking-wider uppercase text-sm">{t('landing.model.tag')}</span>
+                <h2 className="text-3xl font-bold mt-2">{t('landing.model.title')}</h2>
+                <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">{t('landing.model.desc')}</p>
               </div>
               <div className="relative rounded-[2.5rem] overflow-hidden aspect-[21/9] bg-muted group cursor-pointer">
                 <Image src="/images/medical-team.png" alt="Total Care Model" fill className="object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-12">
                   <div className="text-white">
-                    <p className="font-medium text-lg mb-2">Our UroCare™ model unites doctors, specialists, and wellness experts.</p>
-                    <p className="text-sm opacity-80">From diagnostics to recovery, we ensure holistic healing.</p>
+                    <p className="font-medium text-lg mb-2">{t('landing.model.overlay1')}</p>
+                    <p className="text-sm opacity-80">{t('landing.model.overlay2')}</p>
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -367,22 +366,22 @@ export function LandingPage() {
           < section className="w-full py-24 bg-card/50" >
             <div className="container mx-auto px-4 md:px-6">
               <div className="text-center mb-16">
-                <span className="text-primary font-medium tracking-wider uppercase text-sm">Testimonials</span>
-                <h2 className="text-3xl font-bold mt-2">Real Stories, Real Healing — From Our Community</h2>
+                <span className="text-primary font-medium tracking-wider uppercase text-sm">{t('landing.testimonials.tag')}</span>
+                <h2 className="text-3xl font-bold mt-2">{t('landing.testimonials.title')}</h2>
               </div>
 
               <div className="grid md:grid-cols-3 gap-8 items-center">
                 {/* Small Left */}
                 <div className="p-8 rounded-3xl bg-background border border-border/50 h-fit">
-                  <h4 className="font-bold text-primary mb-2">Friendly staff review</h4>
-                  <p className="text-sm text-muted-foreground mb-6">"The team made every step stress-free and supportive. I finally feel confident about my treatment."</p>
+                  <h4 className="font-bold text-primary mb-2">{t('landing.testimonials.reviews.r1Title')}</h4>
+                  <p className="text-sm text-muted-foreground mb-6">{t('landing.testimonials.reviews.r1Text')}</p>
                   <div className="flex items-center gap-3">
                     <div className="size-10 bg-muted rounded-full overflow-hidden relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400" />
                     </div>
                     <div>
                       <p className="font-bold text-sm">Robert Fox</p>
-                      <p className="text-xs text-muted-foreground">Regular Patient</p>
+                      <p className="text-xs text-muted-foreground">{t('landing.testimonials.reviews.r1Role')}</p>
                     </div>
                   </div>
                 </div>
@@ -391,23 +390,23 @@ export function LandingPage() {
                 <div className="relative rounded-3xl overflow-hidden aspect-[3/4] group">
                   <Image src="/images/medical-team.png" alt="Featured Patient" fill className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
-                    <p className="text-lg font-medium italic mb-4">"UroCare didn't just treat my condition; they treated me as a person. The continuous monitoring gave me my life back."</p>
+                    <p className="text-lg font-medium italic mb-4">{t('landing.testimonials.reviews.r2Text')}</p>
                     <p className="font-bold text-xl">Cody Fisher</p>
-                    <p className="text-sm opacity-80">Kidney Surgery • 2024</p>
+                    <p className="text-sm opacity-80">{t('landing.testimonials.reviews.r2Surgery')}</p>
                   </div>
                 </div>
 
                 {/* Small Right */}
                 <div className="p-8 rounded-3xl bg-background border border-border/50 h-fit">
-                  <h4 className="font-bold text-primary mb-2">Seamless experience</h4>
-                  <p className="text-sm text-muted-foreground mb-6">"User friendly, clear instructions, and I felt connected to my care team the whole time."</p>
+                  <h4 className="font-bold text-primary mb-2">{t('landing.testimonials.reviews.r3Title')}</h4>
+                  <p className="text-sm text-muted-foreground mb-6">{t('landing.testimonials.reviews.r3Text')}</p>
                   <div className="flex items-center gap-3">
                     <div className="size-10 bg-muted rounded-full overflow-hidden relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-cyan-400" />
                     </div>
                     <div>
                       <p className="font-bold text-sm">Albert Flores</p>
-                      <p className="text-xs text-muted-foreground">Regular Patient</p>
+                      <p className="text-xs text-muted-foreground">{t('landing.testimonials.reviews.r3Role')}</p>
                     </div>
                   </div>
                 </div>
@@ -420,11 +419,11 @@ export function LandingPage() {
             <div className="container mx-auto px-4 md:px-6">
               <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                 <div className="max-w-2xl">
-                  <span className="text-primary font-medium tracking-wider uppercase text-sm">Blog</span>
-                  <h2 className="text-3xl font-bold mt-2">Explore Expert Insights for a Healthier, Happier Life</h2>
+                  <span className="text-primary font-medium tracking-wider uppercase text-sm">{t('landing.blog.tag')}</span>
+                  <h2 className="text-3xl font-bold mt-2">{t('landing.blog.title')}</h2>
                 </div>
                 <p className="text-muted-foreground text-sm max-w-md text-right hidden md:block">
-                  Discover expert health insights, wellness advice, and medical updates to help you make informed decisions.
+                  {t('landing.blog.desc')}
                 </p>
               </div>
 
@@ -434,14 +433,14 @@ export function LandingPage() {
                     <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
                       <Image src="/images/medical-team.png" alt="Blog" fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute top-4 right-4 bg-white/90 text-foreground text-xs font-bold px-3 py-1 rounded-full">
-                        Health
+                        {t('landing.blog.cardTag')}
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg group-hover:text-primary transition-colors">A Daily Habit for a Healthier Heart you create.</h3>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">Using corporate services is a fluctuating degree cause of world is the best brighter but ...</p>
+                      <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{t('landing.blog.cardTitle')}</h3>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{t('landing.blog.cardDesc')}</p>
                       <div className="mt-4 flex items-center justify-between">
-                        <span className="text-xs font-bold text-primary">Read More</span>
+                        <span className="text-xs font-bold text-primary">{t('landing.blog.readMore')}</span>
                         <ArrowRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
@@ -465,24 +464,24 @@ export function LandingPage() {
               <div className="lg:col-span-5 space-y-6">
                 <div className="space-y-3">
                   <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-                    Stay ahead of your recovery journey
+                    {t('landing.newsletter.title')}
                   </h2>
                   <p className="text-blue-100 dark:text-slate-300 text-base">
-                    Get expert insights, wellness guides, and urological health news — delivered monthly.
+                    {t('landing.newsletter.desc')}
                   </p>
                 </div>
 
                 <form className="flex flex-col sm:flex-row gap-3">
                   <input
                     type="email"
-                    placeholder="Enter Your Email"
+                    placeholder={t('landing.newsletter.placeholder')}
                     className="flex-1 h-12 px-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/40"
                   />
                   <button
                     type="submit"
                     className="h-12 px-8 rounded-full bg-white text-primary font-semibold hover:bg-white/90 transition-colors shadow-lg"
                   >
-                    Subscribe
+                    {t('landing.newsletter.btn')}
                   </button>
                 </form>
               </div>
@@ -492,37 +491,37 @@ export function LandingPage() {
 
                 {/* Quick Links */}
                 <div className="space-y-4">
-                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">Quick Links</h3>
+                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">{t('landing.footer.col1')}</h3>
                   <ul className="space-y-2.5">
-                    <li><Link href="/" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Home</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">About</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Features</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Blog</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Contact</Link></li>
+                    <li><Link href="/" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col1Links.home')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col1Links.about')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col1Links.features')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col1Links.blog')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('common.contact')}</Link></li>
                   </ul>
                 </div>
 
                 {/* Our Platform */}
                 <div className="space-y-4">
-                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">Our Platform</h3>
+                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">{t('landing.footer.col2')}</h3>
                   <ul className="space-y-2.5">
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Patient Journey</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Alert System</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Secure Messaging</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Health Library</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Virtual Tour</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Check-in Tools</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.journey')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.alerts')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.messaging')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.library')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.tour')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col2Links.checkin')}</Link></li>
                   </ul>
                 </div>
 
                 {/* For Healthcare Professionals */}
                 <div className="space-y-4">
-                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">Professionals</h3>
+                  <h3 className="text-white font-semibold text-sm uppercase tracking-wider">{t('landing.footer.col3')}</h3>
                   <ul className="space-y-2.5">
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Our Specialists</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Join as Specialist</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">Pro Dashboard</Link></li>
-                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">How It Works</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col3Links.specialists')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col3Links.join')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col3Links.dashboard')}</Link></li>
+                    <li><Link href="#" className="text-blue-100 dark:text-slate-300 hover:text-white transition-colors text-sm">{t('landing.footer.col3Links.how')}</Link></li>
                   </ul>
                 </div>
 
@@ -541,7 +540,7 @@ export function LandingPage() {
 
               {/* Copyright */}
               <div className="text-center md:text-right">
-                <p className="text-xs text-blue-200/60 dark:text-slate-400">© 2026 UroCare. All rights reserved.</p>
+                <p className="text-xs text-blue-200/60 dark:text-slate-400">{t('landing.footer.copyright')}</p>
               </div>
             </div>
           </div>

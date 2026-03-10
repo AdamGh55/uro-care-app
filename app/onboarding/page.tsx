@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const surgeryTypes = [
   { id: "prostatectomy", name: "Prostatectomie", description: "Ablation de la prostate" },
@@ -60,6 +61,7 @@ const steps = [
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0); // Start at 0 for Code Entry
   const [accessCode, setAccessCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -203,7 +205,7 @@ export default function OnboardingPage() {
             </div>
             <span className="text-lg font-semibold text-foreground">UroCare</span>
           </div>
-          <Badge variant="outline">Création du profil</Badge>
+          <Badge variant="outline">{t('auth.onboarding.badge')}</Badge>
         </div>
       </header>
 
@@ -215,9 +217,9 @@ export default function OnboardingPage() {
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <ShieldCheck className="h-8 w-8 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold">Code d'accès requis</h1>
+              <h1 className="text-2xl font-bold">{t('auth.onboarding.codeTitle')}</h1>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                L'inscription à UroCare se fait uniquement sur invitation de votre praticien.
+                {t('auth.onboarding.codeDesc')}
               </p>
             </div>
 
@@ -225,7 +227,7 @@ export default function OnboardingPage() {
               <CardContent className="pt-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="code">Entrez votre code</Label>
+                    <Label htmlFor="code">{t('auth.onboarding.enterCode')}</Label>
                     <Input
                       id="code"
                       placeholder="URO-XXXX"
@@ -236,14 +238,14 @@ export default function OnboardingPage() {
                     />
                   </div>
                   <Button className="w-full" onClick={verifyCode}>
-                    Vérifier le code
+                    {t('auth.onboarding.verifyBtn')}
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
             <p className="text-xs text-muted-foreground text-center">
-              Si vous n'avez pas de code, veuillez contacter votre urologue.
+              {t('auth.onboarding.noCodeInfo')}
             </p>
           </div>
         ) : (
@@ -252,10 +254,10 @@ export default function OnboardingPage() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">
-                  Étape {currentStep} sur {steps.length}
+                  {t('auth.onboarding.stepOf').replace('{current}', currentStep.toString()).replace('{total}', steps.length.toString())}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  {steps[currentStep - 1].title}
+                  {currentStep === 1 ? t('auth.onboarding.step1Title') : steps[currentStep - 1].title}
                 </span>
               </div>
               <Progress value={progress} className="h-2" />
@@ -289,7 +291,7 @@ export default function OnboardingPage() {
                           <Icon className="h-4 w-4" />
                         )}
                       </div>
-                      <span className="text-[10px] hidden sm:block">{step.title}</span>
+                      <span className="text-[10px] hidden sm:block">{t('auth.onboarding.step1Title')}</span>
                     </div>
                   );
                 })}
@@ -299,14 +301,14 @@ export default function OnboardingPage() {
             {/* Step Content */}
             <Card>
               <CardHeader>
-                <CardTitle>{steps[currentStep - 1].title}</CardTitle>
+                <CardTitle>{t('auth.onboarding.step1Title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {currentStep === 1 && (
                   <>
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName">Prénom (Défini par le médecin)</Label>
+                        <Label htmlFor="firstName">{t('auth.onboarding.firstName')}</Label>
                         <Input
                           id="firstName"
                           value={formData.firstName}
@@ -316,7 +318,7 @@ export default function OnboardingPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lastName">Nom (Défini par le médecin)</Label>
+                        <Label htmlFor="lastName">{t('auth.onboarding.lastName')}</Label>
                         <Input
                           id="lastName"
                           value={formData.lastName}
@@ -328,7 +330,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email">{t('auth.onboarding.email')}</Label>
                       <Input
                         id="email"
                         type="email"
@@ -336,12 +338,12 @@ export default function OnboardingPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
-                        placeholder="votre@email.com"
+                        placeholder={t('auth.onboarding.emailPlaceholder')}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="password">Mot de passe *</Label>
+                      <Label htmlFor="password">{t('auth.onboarding.password')}</Label>
                       <Input
                         id="password"
                         type="password"
@@ -349,7 +351,7 @@ export default function OnboardingPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, password: e.target.value })
                         }
-                        placeholder="Choisissez un mot de passe sécurisé"
+                        placeholder={t('auth.onboarding.passwordPlaceholder')}
                       />
                     </div>
                   </>
@@ -367,18 +369,18 @@ export default function OnboardingPage() {
                 type="button"
               >
                 <ChevronLeft className="h-4 w-4" />
-                Précédent
+                {t('auth.onboarding.prev')}
               </Button>
 
               <Button onClick={handleNext} className="gap-2" type="button">
                 {currentStep === steps.length ? (
                   <>
                     <CheckCircle2 className="h-4 w-4" />
-                    Terminer
+                    {t('auth.onboarding.finish')}
                   </>
                 ) : (
                   <>
-                    Suivant
+                    {t('auth.onboarding.next')}
                     <ChevronRight className="h-4 w-4" />
                   </>
                 )}
