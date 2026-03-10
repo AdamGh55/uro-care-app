@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import {
   LineChart,
   Line,
@@ -165,6 +166,7 @@ const journalEntries = [
 ];
 
 export default function JournalHistoryPage() {
+  const { t } = useLanguage();
   const [selectedTab, setSelectedTab] = useState("charts");
 
   const averagePain =
@@ -188,10 +190,10 @@ export default function JournalHistoryPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-foreground">
-            Historique du journal
+            {t('patient.journal.history.title')}
           </h1>
           <p className="text-muted-foreground">
-            Évolution de vos symptômes depuis l'intervention
+            {t('patient.journal.history.subtitle')}
           </p>
         </div>
       </div>
@@ -202,7 +204,7 @@ export default function JournalHistoryPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Douleur moyenne</p>
+                <p className="text-sm text-muted-foreground">{t('patient.journal.history.avgPain')}</p>
                 <p className="text-2xl font-bold">{averagePain.toFixed(1)}/10</p>
               </div>
               <div
@@ -214,7 +216,7 @@ export default function JournalHistoryPage() {
                   <TrendingUp className="h-4 w-4" />
                 )}
                 <span className="text-sm font-medium">
-                  {Math.abs(painTrend)} pts
+                  {Math.abs(painTrend)} {t('patient.journal.history.pts')}
                 </span>
               </div>
             </div>
@@ -226,7 +228,7 @@ export default function JournalHistoryPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  Température moyenne
+                  {t('patient.journal.history.avgTemp')}
                 </p>
                 <p className="text-2xl font-bold">{avgTemp.toFixed(1)}°C</p>
               </div>
@@ -250,7 +252,7 @@ export default function JournalHistoryPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Photos de plaie</p>
+                <p className="text-sm text-muted-foreground">{t('patient.journal.history.woundPhotos')}</p>
                 <p className="text-2xl font-bold">{woundPhotos.length}</p>
               </div>
               <Camera className="h-5 w-5 text-muted-foreground" />
@@ -261,9 +263,9 @@ export default function JournalHistoryPage() {
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="charts">Graphiques</TabsTrigger>
-          <TabsTrigger value="photos">Photos</TabsTrigger>
-          <TabsTrigger value="entries">Entrées</TabsTrigger>
+          <TabsTrigger value="charts">{t('patient.journal.history.tabs.charts')}</TabsTrigger>
+          <TabsTrigger value="photos">{t('patient.journal.history.tabs.photos')}</TabsTrigger>
+          <TabsTrigger value="entries">{t('patient.journal.history.tabs.entries')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="charts" className="space-y-6 mt-4">
@@ -272,7 +274,7 @@ export default function JournalHistoryPage() {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Activity className="h-4 w-4" />
-                Évolution de la douleur (EVA)
+                {t('patient.journal.history.painChartTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -301,7 +303,7 @@ export default function JournalHistoryPage() {
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "8px",
                     }}
-                    formatter={(value) => [`${value}/10`, "Douleur"]}
+                    formatter={(value) => [`${value}/10`, t('patient.journal.history.pain')]}
                   />
                   <Area
                     type="monotone"
@@ -315,15 +317,15 @@ export default function JournalHistoryPage() {
               <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-success" />
-                  0-3: Faible
+                  {t('patient.journal.history.painLow')}
                 </span>
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-warning" />
-                  4-6: Modérée
+                  {t('patient.journal.history.painModerate')}
                 </span>
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
-                  7-10: Sévère
+                  {t('patient.journal.history.painSevere')}
                 </span>
               </div>
             </CardContent>
@@ -334,7 +336,7 @@ export default function JournalHistoryPage() {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Thermometer className="h-4 w-4" />
-                Évolution de la température
+                {t('patient.journal.history.tempChartTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -349,7 +351,7 @@ export default function JournalHistoryPage() {
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "8px",
                     }}
-                    formatter={(value) => [`${value}°C`, "Température"]}
+                    formatter={(value) => [`${value}°C`, t('patient.journal.history.temperature')]}
                   />
                   {/* Reference line for fever threshold */}
                   <Line
@@ -364,15 +366,15 @@ export default function JournalHistoryPage() {
               <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-success" />
-                  {"< 37.5°C: Normal"}
+                  {t('patient.journal.history.tempNormal')}
                 </span>
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-warning" />
-                  37.5-38°C: Subfébrile
+                  {t('patient.journal.history.tempWarning')}
                 </span>
                 <span className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
-                  {"> 38°C: Fièvre"}
+                  {t('patient.journal.history.tempFever')}
                 </span>
               </div>
             </CardContent>
@@ -384,7 +386,7 @@ export default function JournalHistoryPage() {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Camera className="h-4 w-4" />
-                Photos de la cicatrice
+                {t('patient.journal.history.photosTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -397,7 +399,7 @@ export default function JournalHistoryPage() {
                     <div className="aspect-square bg-muted flex items-center justify-center">
                       <div className="text-center text-muted-foreground">
                         <Camera className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                        <p className="text-sm">Photo de cicatrice</p>
+                        <p className="text-sm">{t('patient.journal.history.photoPlaceholder')}</p>
                       </div>
                     </div>
                     <div className="p-3 border-t">
@@ -439,39 +441,37 @@ export default function JournalHistoryPage() {
 
                 <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t">
                   <div>
-                    <p className="text-xs text-muted-foreground">Douleur</p>
+                    <p className="text-xs text-muted-foreground">{t('patient.journal.history.pain')}</p>
                     <p
-                      className={`font-semibold ${
-                        entry.pain >= 7
+                      className={`font-semibold ${entry.pain >= 7
                           ? "text-destructive"
                           : entry.pain >= 4
                             ? "text-warning"
                             : "text-success"
-                      }`}
+                        }`}
                     >
                       {entry.pain}/10
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Température</p>
+                    <p className="text-xs text-muted-foreground">{t('patient.journal.history.temperature')}</p>
                     <p
-                      className={`font-semibold ${
-                        entry.temperature >= 38
+                      className={`font-semibold ${entry.temperature >= 38
                           ? "text-destructive"
                           : entry.temperature >= 37.5
                             ? "text-warning"
                             : "text-foreground"
-                      }`}
+                        }`}
                     >
                       {entry.temperature}°C
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Médicaments</p>
+                    <p className="text-xs text-muted-foreground">{t('patient.journal.history.medication')}</p>
                     <p
                       className={`font-semibold ${entry.medicationTaken ? "text-success" : "text-destructive"}`}
                     >
-                      {entry.medicationTaken ? "Pris" : "Non pris"}
+                      {entry.medicationTaken ? t('patient.journal.history.medsTaken') : t('patient.journal.history.medsNotTaken')}
                     </p>
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export default function JournalHistoryPage() {
                 {entry.hasPhoto && (
                   <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                     <Camera className="h-3 w-3" />
-                    <span>Photo ajoutée</span>
+                    <span>{t('patient.journal.history.photoAdded')}</span>
                   </div>
                 )}
               </CardContent>

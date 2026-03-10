@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const categories = [
   {
@@ -269,6 +270,7 @@ const articles = [
 ];
 
 export default function LibraryPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<
@@ -305,7 +307,7 @@ export default function LibraryPage() {
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour à la bibliothèque
+          {t('patient.library.back')}
         </Button>
 
         <Card>
@@ -345,51 +347,43 @@ export default function LibraryPage() {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                     <Play className="h-8 w-8 text-primary" />
                   </div>
-                  <p className="text-muted-foreground">Vidéo explicative</p>
+                  <p className="text-muted-foreground">{t('patient.library.video')}</p>
                 </div>
               </div>
             )}
 
             <div className="prose prose-sm max-w-none">
-              <h3>Introduction</h3>
+              <h3>{t('patient.library.intro')}</h3>
               <p>
-                Cette fiche vous présente les informations essentielles sur{" "}
-                {selectedArticle.title.toLowerCase()}. Les informations
-                contenues ici ont été validées par notre équipe médicale.
+                {t('patient.library.introDesc').replace('{title}', selectedArticle.title.toLowerCase())}
               </p>
 
-              <h3>Points clés</h3>
+              <h3>{t('patient.library.keyPoints')}</h3>
               <ul>
-                <li>
-                  Information importante concernant la procédure ou le sujet
-                </li>
-                <li>Conseils pratiques pour votre quotidien</li>
-                <li>Signes à surveiller et quand consulter</li>
-                <li>Ressources complémentaires disponibles</li>
+                <li>{t('patient.library.keyPointsList.info')}</li>
+                <li>{t('patient.library.keyPointsList.practical')}</li>
+                <li>{t('patient.library.keyPointsList.signs')}</li>
+                <li>{t('patient.library.keyPointsList.resources')}</li>
               </ul>
 
-              <h3>Recommandations</h3>
+              <h3>{t('patient.library.recommendations')}</h3>
               <p>
-                Suivez les conseils de votre équipe soignante et n'hésitez pas à
-                poser des questions lors de vos consultations. Chaque patient
-                est unique et les recommandations peuvent être adaptées à votre
-                situation personnelle.
+                {t('patient.library.recommendationsDesc')}
               </p>
 
               <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 mt-4">
-                <h4 className="text-primary mt-0">Besoin d'aide ?</h4>
+                <h4 className="text-primary mt-0">{t('patient.library.needHelp')}</h4>
                 <p className="mb-0">
-                  Si vous avez des questions, utilisez la messagerie sécurisée
-                  pour contacter votre équipe soignante.
+                  {t('patient.library.helpDesc')}
                 </p>
               </div>
             </div>
 
             <div className="flex gap-2 pt-4 border-t">
-              <Badge variant="outline">{selectedArticle.readTime} lecture</Badge>
+              <Badge variant="outline">{t('patient.library.readingTime').replace('{time}', selectedArticle.readTime)}</Badge>
               {selectedArticle.hasVideo && (
                 <Badge variant="outline" className="gap-1">
-                  <Play className="h-3 w-3" /> Vidéo incluse
+                  <Play className="h-3 w-3" /> {t('patient.library.videoIncluded')}
                 </Badge>
               )}
             </div>
@@ -403,17 +397,17 @@ export default function LibraryPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">
-          Bibliothèque Urologique
+          {t('patient.library.title')}
         </h1>
         <p className="text-muted-foreground">
-          Contenus éducatifs validés par nos experts
+          {t('patient.library.subtitle')}
         </p>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Rechercher un article..."
+          placeholder={t('patient.library.search')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -422,10 +416,10 @@ export default function LibraryPage() {
 
       <Tabs defaultValue="categories" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="categories">Catégories</TabsTrigger>
-          <TabsTrigger value="all">Tous les articles</TabsTrigger>
+          <TabsTrigger value="categories">{t('patient.library.tabs.categories')}</TabsTrigger>
+          <TabsTrigger value="all">{t('patient.library.tabs.all')}</TabsTrigger>
           <TabsTrigger value="favorites">
-            Favoris ({favoriteArticles.length})
+            {t('patient.library.tabs.favorites')} ({favoriteArticles.length})
           </TabsTrigger>
         </TabsList>
 
@@ -438,7 +432,7 @@ export default function LibraryPage() {
                 className="gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Toutes les catégories
+                {t('patient.library.allCategories')}
               </Button>
 
               <div className="grid gap-3">
@@ -461,7 +455,7 @@ export default function LibraryPage() {
                             {article.description}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {article.readTime} de lecture
+                            {article.readTime} {t('patient.library.readTimeSuffix')}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -513,7 +507,7 @@ export default function LibraryPage() {
                             {category.description}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {articleCount} articles
+                            {articleCount} {t('patient.library.articleCount')}
                           </p>
                         </div>
                         <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -577,9 +571,9 @@ export default function LibraryPage() {
             <Card>
               <CardContent className="p-8 text-center">
                 <StarOff className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <h3 className="font-medium mb-1">Aucun favori</h3>
+                <h3 className="font-medium mb-1">{t('patient.library.noFavorites')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Ajoutez des articles en favoris pour les retrouver facilement
+                  {t('patient.library.noFavoritesDesc')}
                 </p>
               </CardContent>
             </Card>

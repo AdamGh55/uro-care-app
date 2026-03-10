@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface AlertPopupProps {
   type: "fever" | "pain" | "hematuria" | "retention" | "infection";
@@ -29,87 +30,29 @@ interface AlertPopupProps {
   onContactTeam: () => void;
 }
 
-const alertConfig = {
-  fever: {
-    title: "Fièvre détectée",
-    icon: Thermometer,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
-    borderColor: "border-destructive/20",
-    description: "Votre température est supérieure à 38°C",
+const getAlertConfig = (type: string, t: any) => {
+  const configs = {
+    fever: { icon: Thermometer, color: "text-destructive", bgColor: "bg-destructive/10", borderColor: "border-destructive/20" },
+    pain: { icon: Activity, color: "text-destructive", bgColor: "bg-destructive/10", borderColor: "border-destructive/20" },
+    hematuria: { icon: AlertTriangle, color: "text-warning", bgColor: "bg-warning/10", borderColor: "border-warning/20" },
+    retention: { icon: AlertCircle, color: "text-destructive", bgColor: "bg-destructive/10", borderColor: "border-destructive/20" },
+    infection: { icon: AlertTriangle, color: "text-warning", bgColor: "bg-warning/10", borderColor: "border-warning/20" }
+  };
+
+  const c = configs[type as keyof typeof configs];
+
+  return {
+    ...c,
+    title: t(`patient.alerts.${type}.title`),
+    description: t(`patient.alerts.${type}.desc`),
     advice: [
-      "Prenez du paracétamol si vous en avez",
-      "Buvez beaucoup d'eau",
-      "Reposez-vous",
-      "Surveillez votre température toutes les 4 heures",
+      t(`patient.alerts.${type}.advice.1`),
+      t(`patient.alerts.${type}.advice.2`),
+      t(`patient.alerts.${type}.advice.3`),
+      t(`patient.alerts.${type}.advice.4`)
     ],
-    urgent:
-      "Si la fièvre persiste plus de 24h ou dépasse 39°C, contactez immédiatement votre équipe médicale ou rendez-vous aux urgences.",
-  },
-  pain: {
-    title: "Douleur sévère signalée",
-    icon: Activity,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
-    borderColor: "border-destructive/20",
-    description: "Vous avez indiqué une douleur ≥ 7/10",
-    advice: [
-      "Prenez vos antalgiques prescrits",
-      "Allongez-vous confortablement",
-      "Appliquez une poche de glace si approprié",
-      "Respirez profondément et calmement",
-    ],
-    urgent:
-      "Si la douleur ne diminue pas dans les 2 heures ou s'aggrave, contactez votre équipe médicale.",
-  },
-  hematuria: {
-    title: "Hématurie persistante",
-    icon: AlertTriangle,
-    color: "text-warning",
-    bgColor: "bg-warning/10",
-    borderColor: "border-warning/20",
-    description: "Présence de sang dans les urines signalée",
-    advice: [
-      "Augmentez votre consommation d'eau",
-      "Évitez les efforts physiques",
-      "Notez la couleur et la quantité",
-      "Surveillez l'évolution",
-    ],
-    urgent:
-      "Si le saignement est abondant ou s'accompagne de caillots, contactez immédiatement votre équipe médicale.",
-  },
-  retention: {
-    title: "Suspicion de rétention urinaire",
-    icon: AlertCircle,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
-    borderColor: "border-destructive/20",
-    description: "Difficulté ou impossibilité d'uriner signalée",
-    advice: [
-      "Essayez de vous détendre",
-      "Prenez un bain chaud si possible",
-      "Essayez la position assise",
-      "Ne forcez pas",
-    ],
-    urgent:
-      "La rétention urinaire est une urgence médicale. Si vous ne pouvez pas uriner depuis plus de 6 heures, rendez-vous aux urgences.",
-  },
-  infection: {
-    title: "Signes d'infection possibles",
-    icon: AlertTriangle,
-    color: "text-warning",
-    bgColor: "bg-warning/10",
-    borderColor: "border-warning/20",
-    description: "Symptômes évocateurs d'une infection détectés",
-    advice: [
-      "Surveillez votre température",
-      "Observez la cicatrice (rougeur, écoulement)",
-      "Notez tout changement",
-      "Prenez des photos si nécessaire",
-    ],
-    urgent:
-      "Si vous avez de la fièvre, des frissons ou si la plaie devient rouge et chaude, contactez votre équipe médicale rapidement.",
-  },
+    urgent: t(`patient.alerts.${type}.urgent`)
+  };
 };
 
 export function AlertPopup({
@@ -119,7 +62,8 @@ export function AlertPopup({
   onClose,
   onContactTeam,
 }: AlertPopupProps) {
-  const config = alertConfig[type];
+  const { t } = useLanguage();
+  const config = getAlertConfig(type, t);
   const Icon = config.icon;
 
   return (
@@ -146,7 +90,7 @@ export function AlertPopup({
 
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium text-sm mb-2">Conseils immédiats :</h4>
+            <h4 className="font-medium text-sm mb-2">{t('patient.alerts.settings.immediateAdvice')}</h4>
             <ul className="space-y-2">
               {config.advice.map((advice, index) => (
                 <li key={index} className="flex items-start gap-2 text-sm">
@@ -170,16 +114,16 @@ export function AlertPopup({
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <Button onClick={onContactTeam} className="w-full gap-2">
             <MessageSquare className="h-4 w-4" />
-            Contacter mon équipe
+            {t('patient.alerts.settings.btnContact')}
           </Button>
           <Button variant="outline" onClick={onClose} className="w-full gap-2 bg-transparent">
             <X className="h-4 w-4" />
-            J'ai compris
+            {t('patient.alerts.settings.btnUnderstood')}
           </Button>
           <a href="tel:15" className="w-full">
             <Button variant="destructive" className="w-full gap-2">
               <Phone className="h-4 w-4" />
-              Appeler les urgences (15)
+              {t('patient.alerts.settings.btnEmergency')}
             </Button>
           </a>
         </DialogFooter>
@@ -188,46 +132,46 @@ export function AlertPopup({
   );
 }
 
-// Demo component to show how alerts work
 export function AlertDemo() {
+  const { t } = useLanguage();
   const [alertType, setAlertType] = useState<
     "fever" | "pain" | "hematuria" | "retention" | "infection" | null
   >(null);
 
   return (
     <div className="space-y-4">
-      <h3 className="font-medium">Démonstration des alertes</h3>
+      <h3 className="font-medium">{t('patient.alerts.settings.demoTitle')}</h3>
       <div className="flex flex-wrap gap-2">
         <Button
           variant="outline"
           size="sm"
           onClick={() => setAlertType("fever")}
         >
-          Fièvre
+          {t('patient.alerts.settings.demoFever')}
         </Button>
         <Button variant="outline" size="sm" onClick={() => setAlertType("pain")}>
-          Douleur sévère
+          {t('patient.alerts.settings.demoPain')}
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setAlertType("hematuria")}
         >
-          Hématurie
+          {t('patient.alerts.settings.demoHematuria')}
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setAlertType("retention")}
         >
-          Rétention
+          {t('patient.alerts.settings.demoRetention')}
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setAlertType("infection")}
         >
-          Infection
+          {t('patient.alerts.settings.demoInfection')}
         </Button>
       </div>
 

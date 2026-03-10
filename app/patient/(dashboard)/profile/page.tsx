@@ -21,8 +21,10 @@ import {
   Shield,
 } from "lucide-react"
 import { currentPatient } from "@/lib/mock-data"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 export default function PatientProfile() {
+  const { t, locale } = useLanguage()
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [reminderTime, setReminderTime] = useState("09:00")
 
@@ -32,8 +34,8 @@ export default function PatientProfile() {
     <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">Profile</h1>
-        <p className="text-muted-foreground">Manage your account and preferences.</p>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('patient.profile.title')}</h1>
+        <p className="text-muted-foreground">{t('patient.profile.subtitle')}</p>
       </div>
 
       {/* Profile Card */}
@@ -61,7 +63,7 @@ export default function PatientProfile() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Stethoscope className="h-5 w-5" />
-            Surgery Information
+            {t('patient.profile.surgeryInfo')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -71,7 +73,7 @@ export default function PatientProfile() {
                 <Shield className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Surgery Type</p>
+                <p className="text-sm text-muted-foreground">{t('patient.profile.surgeryType')}</p>
                 <p className="font-medium text-foreground">{currentPatient.surgeryType}</p>
               </div>
             </div>
@@ -80,9 +82,9 @@ export default function PatientProfile() {
                 <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Surgery Date</p>
+                <p className="text-sm text-muted-foreground">{t('patient.profile.surgeryDate')}</p>
                 <p className="font-medium text-foreground">
-                  {new Date(currentPatient.surgeryDate).toLocaleDateString('en-US', {
+                  {new Date(currentPatient.surgeryDate).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',
@@ -95,7 +97,7 @@ export default function PatientProfile() {
                 <User className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Surgeon</p>
+                <p className="text-sm text-muted-foreground">{t('patient.profile.surgeon')}</p>
                 <p className="font-medium text-foreground">{currentPatient.surgeonName}</p>
               </div>
             </div>
@@ -104,8 +106,8 @@ export default function PatientProfile() {
                 <Clock className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Recovery Day</p>
-                <p className="font-medium text-foreground">Post-op Day {currentPatient.postOpDay}</p>
+                <p className="text-sm text-muted-foreground">{t('patient.profile.recoveryDay')}</p>
+                <p className="font-medium text-foreground">{t('patient.profile.postOpDay').replace('{day}', currentPatient.postOpDay.toString())}</p>
               </div>
             </div>
           </div>
@@ -117,7 +119,7 @@ export default function PatientProfile() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Users className="h-5 w-5" />
-            Emergency Contact
+            {t('patient.profile.emergencyContact')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -144,18 +146,18 @@ export default function PatientProfile() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Bell className="h-5 w-5" />
-            Notification Settings
+            {t('patient.profile.notificationSettings')}
           </CardTitle>
           <CardDescription>
-            Manage how and when you receive notifications.
+            {t('patient.profile.manageNotifications')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label htmlFor="notifications" className="text-base">Push Notifications</Label>
+              <Label htmlFor="notifications" className="text-base">{t('patient.profile.pushNotifications')}</Label>
               <p className="text-sm text-muted-foreground">
-                Receive reminders for check-ins and tasks
+                {t('patient.profile.receiveReminders')}
               </p>
             </div>
             <Switch
@@ -164,12 +166,12 @@ export default function PatientProfile() {
               onCheckedChange={setNotificationsEnabled}
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label htmlFor="reminder-time" className="text-base">Daily Reminder Time</Label>
+              <Label htmlFor="reminder-time" className="text-base">{t('patient.profile.dailyReminderTime')}</Label>
               <p className="text-sm text-muted-foreground">
-                When to remind you about check-ins
+                {t('patient.profile.whenToRemind')}
               </p>
             </div>
             <Select value={reminderTime} onValueChange={setReminderTime}>
@@ -194,7 +196,7 @@ export default function PatientProfile() {
       <Link href="/">
         <Button variant="outline" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 bg-transparent">
           <LogOut className="h-4 w-4 mr-2" />
-          Log out
+          {t('patient.profile.logout')}
         </Button>
       </Link>
     </div>

@@ -25,8 +25,10 @@ import {
 } from "lucide-react"
 import { MessageService, Thread, Message } from "@/lib/message-service"
 import { currentPatient } from "@/lib/mock-data"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 export default function PatientMessages() {
+  const { t } = useLanguage()
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
@@ -67,12 +69,12 @@ export default function PatientMessages() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground md:text-3xl">Messages</h1>
-          <p className="text-muted-foreground">Communicate with your care team</p>
+          <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('patient.messages.title')}</h1>
+          <p className="text-muted-foreground">{t('patient.messages.subtitle')}</p>
         </div>
         <Button onClick={() => setShowNewMessageDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          New Message
+          {t('patient.messages.newMessage')}
         </Button>
       </div>
 
@@ -84,7 +86,7 @@ export default function PatientMessages() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search messages..."
+                placeholder={t('patient.messages.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9"
@@ -92,7 +94,7 @@ export default function PatientMessages() {
             </div>
           </CardHeader>
           <div className="p-4 text-center text-muted-foreground">
-            conversation list
+            {t('patient.messages.conversationList')}
           </div>
         </Card>
 
@@ -107,8 +109,8 @@ export default function PatientMessages() {
                     <Stethoscope className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-base text-foreground">Dr. Chen&apos;s Office</CardTitle>
-                    <p className="text-sm text-muted-foreground">Your care team</p>
+                    <CardTitle className="text-base text-foreground">{t('patient.messages.doctorName')}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{t('patient.messages.careTeam')}</p>
                   </div>
                 </div>
               </CardHeader>
@@ -157,7 +159,7 @@ export default function PatientMessages() {
               <div className="border-t border-border p-4">
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Type a message..."
+                    placeholder={t('patient.messages.typeMessage')}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => {
@@ -169,7 +171,7 @@ export default function PatientMessages() {
                   />
                   <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
                     <Send className="h-4 w-4" />
-                    <span className="sr-only">Send</span>
+                    <span className="sr-only">{t('patient.messages.send')}</span>
                   </Button>
                 </div>
               </div>
@@ -178,7 +180,7 @@ export default function PatientMessages() {
             <CardContent className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Loading conversation...</p>
+                <p className="text-muted-foreground">{t('patient.messages.loading')}</p>
               </div>
             </CardContent>
           )}
@@ -189,27 +191,27 @@ export default function PatientMessages() {
       <Dialog open={showNewMessageDialog} onOpenChange={setShowNewMessageDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Message</DialogTitle>
+            <DialogTitle>{t('patient.messages.newMessage')}</DialogTitle>
             <DialogDescription>
-              Send a message to your care team.
+              {t('patient.messages.dialogDesc')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
               <Stethoscope className="h-5 w-5 text-primary" />
-              <span className="font-medium text-foreground">Dr. Chen&apos;s Office</span>
+              <span className="font-medium text-foreground">{t('patient.messages.doctorName')}</span>
             </div>
             <Textarea
-              placeholder="Type your message here..."
+              placeholder={t('patient.messages.dialogPlaceholder')}
               rows={4}
             />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowNewMessageDialog(false)}>
-              Cancel
+              {t('patient.messages.cancel')}
             </Button>
             <Button onClick={() => setShowNewMessageDialog(false)}>
-              Send Message
+              {t('patient.messages.sendMessage')}
             </Button>
           </DialogFooter>
         </DialogContent>

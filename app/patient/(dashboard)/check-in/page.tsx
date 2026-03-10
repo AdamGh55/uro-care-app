@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import { AlertPopup } from "@/components/alert-popup"
 import { Textarea } from "@/components/ui/textarea"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 interface CheckInData {
   painLevel: number
@@ -45,15 +46,16 @@ interface CheckInData {
 }
 
 const steps = [
-  { id: 1, title: 'Symptômes généraux', icon: Activity },
-  { id: 2, title: 'Constantes', icon: HeartPulse },
-  { id: 3, title: 'Mictions & Transit', icon: Droplets },
-  { id: 4, title: 'Plaie & Médicaments', icon: Stethoscope },
-  { id: 5, title: 'Récapitulatif', icon: Check },
-]
+  { id: 1, key: 'symptoms', icon: Activity },
+  { id: 2, key: 'vitals', icon: HeartPulse },
+  { id: 3, key: 'urination', icon: Droplets },
+  { id: 4, key: 'wound', icon: Stethoscope },
+  { id: 5, key: 'summary', icon: Check },
+] as const
 
 export default function PatientCheckIn() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [data, setData] = useState<CheckInData>({
@@ -166,32 +168,32 @@ export default function PatientCheckIn() {
                 <Check className="h-10 w-10 text-green-600" />
               )}
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Check-in envoyé</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('patient.checkin.submittedTitle')}</h2>
             {warning ? (
               <>
                 <p className="text-muted-foreground mb-6">
-                  Nous vous recommandons de contacter votre équipe soignante.
+                  {t('patient.checkin.submittedWarnTitle')}
                 </p>
                 <Badge variant="secondary" className="bg-amber-100 text-amber-700 mb-6">
-                  Certaines valeurs nécessitent attention
+                  {t('patient.checkin.submittedWarnBadge')}
                 </Badge>
               </>
             ) : (
               <>
                 <p className="text-muted-foreground mb-6">
-                  Tout semble normal aujourd'hui ! Continuez votre récupération.
+                  {t('patient.checkin.submittedOkTitle')}
                 </p>
                 <Badge variant="secondary" className="bg-green-100 text-green-700 mb-6">
-                  Toutes les valeurs sont normales
+                  {t('patient.checkin.submittedOkBadge')}
                 </Badge>
               </>
             )}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button variant="outline" onClick={() => router.push('/patient')}>
-                Retour au tableau de bord
+                {t('patient.checkin.btnDashboard')}
               </Button>
               <Button onClick={() => router.push('/patient/journal')}>
-                Voir le journal
+                {t('patient.checkin.btnJournal')}
               </Button>
             </div>
           </CardContent>
@@ -204,15 +206,17 @@ export default function PatientCheckIn() {
     <div className="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">Check-in quotidien</h1>
-        <p className="text-muted-foreground">Comment vous sentez-vous aujourd'hui ?</p>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('patient.checkin.title')}</h1>
+        <p className="text-muted-foreground">{t('patient.checkin.subtitle')}</p>
       </div>
 
       {/* Progress */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Étape {currentStep} sur 5</span>
-          <span className="font-medium text-foreground">{steps[currentStep - 1].title}</span>
+          <span className="text-muted-foreground">
+            {t('patient.checkin.stepOf').replace('{current}', currentStep.toString()).replace('{total}', '5')}
+          </span>
+          <span className="font-medium text-foreground">{t(`patient.checkin.steps.${steps[currentStep - 1].key}` as any)}</span>
         </div>
         <Progress value={(currentStep / 5) * 100} className="h-2" />
         <div className="flex justify-between">
@@ -238,7 +242,7 @@ export default function PatientCheckIn() {
                   <step.icon className="h-4 w-4" />
                 )}
               </div>
-              <span className="text-xs hidden sm:block">{step.title}</span>
+              <span className="text-xs hidden sm:block">{t(`patient.checkin.steps.${step.key}` as any)}</span>
             </div>
           ))}
         </div>
@@ -252,7 +256,7 @@ export default function PatientCheckIn() {
               const StepIcon = steps[currentStep - 1].icon
               return <StepIcon className="h-5 w-5" />
             })()}
-            {steps[currentStep - 1].title}
+            {t(`patient.checkin.steps.${steps[currentStep - 1].key}` as any)}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -260,7 +264,7 @@ export default function PatientCheckIn() {
             <>
               {/* Pain Level */}
               <div className="space-y-4">
-                <Label className="text-base">Niveau de douleur (EVA) : {data.painLevel}/10</Label>
+                <Label className="text-base">{t('patient.checkin.painScale').replace('{level}', data.painLevel.toString())}</Label>
                 <Slider
                   value={[data.painLevel]}
                   onValueChange={([value]) => updateData('painLevel', value)}
@@ -270,19 +274,19 @@ export default function PatientCheckIn() {
                   className="w-full"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Pas de douleur</span>
-                  <span>Douleur intense</span>
+                  <span>{t('patient.checkin.noPain')}</span>
+                  <span>{t('patient.checkin.severePain')}</span>
                 </div>
                 {data.painLevel >= 7 && (
                   <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
-                    Attention : douleur sévère signalée
+                    {t('patient.checkin.painAlert')}
                   </div>
                 )}
               </div>
 
               {/* Nausea */}
               <div className="space-y-3">
-                <Label className="text-base">Avez-vous des nausées ?</Label>
+                <Label className="text-base">{t('patient.checkin.nausea')}</Label>
                 <RadioGroup
                   value={data.nausea || ''}
                   onValueChange={(value) => updateData('nausea', value as 'yes' | 'no')}
@@ -290,18 +294,18 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="nausea-yes" />
-                    <Label htmlFor="nausea-yes" className="font-normal">Oui</Label>
+                    <Label htmlFor="nausea-yes" className="font-normal">{t('patient.checkin.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="nausea-no" />
-                    <Label htmlFor="nausea-no" className="font-normal">Non</Label>
+                    <Label htmlFor="nausea-no" className="font-normal">{t('patient.checkin.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Dizziness */}
               <div className="space-y-3">
-                <Label className="text-base">Avez-vous des vertiges ?</Label>
+                <Label className="text-base">{t('patient.checkin.dizziness')}</Label>
                 <RadioGroup
                   value={data.dizziness || ''}
                   onValueChange={(value) => updateData('dizziness', value as 'yes' | 'no')}
@@ -309,18 +313,18 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="dizziness-yes" />
-                    <Label htmlFor="dizziness-yes" className="font-normal">Oui</Label>
+                    <Label htmlFor="dizziness-yes" className="font-normal">{t('patient.checkin.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="dizziness-no" />
-                    <Label htmlFor="dizziness-no" className="font-normal">Non</Label>
+                    <Label htmlFor="dizziness-no" className="font-normal">{t('patient.checkin.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Fatigue */}
               <div className="space-y-3">
-                <Label className="text-base">Comment est votre niveau de fatigue ?</Label>
+                <Label className="text-base">{t('patient.checkin.fatigueTitle')}</Label>
                 <RadioGroup
                   value={data.fatigue || ''}
                   onValueChange={(value) => updateData('fatigue', value as 'mild' | 'moderate' | 'severe')}
@@ -328,15 +332,15 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="mild" id="fatigue-mild" />
-                    <Label htmlFor="fatigue-mild" className="font-normal">Légère</Label>
+                    <Label htmlFor="fatigue-mild" className="font-normal">{t('patient.checkin.fatigue.mild')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="moderate" id="fatigue-moderate" />
-                    <Label htmlFor="fatigue-moderate" className="font-normal">Modérée</Label>
+                    <Label htmlFor="fatigue-moderate" className="font-normal">{t('patient.checkin.fatigue.moderate')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="severe" id="fatigue-severe" />
-                    <Label htmlFor="fatigue-severe" className="font-normal">Sévère</Label>
+                    <Label htmlFor="fatigue-severe" className="font-normal">{t('patient.checkin.fatigue.severe')}</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -349,7 +353,7 @@ export default function PatientCheckIn() {
               <div className="space-y-3">
                 <Label htmlFor="temperature" className="text-base flex items-center gap-2">
                   <ThermometerSun className="h-4 w-4" />
-                  Température (°C)
+                  {t('patient.checkin.temperature')}
                 </Label>
                 <Input
                   id="temperature"
@@ -360,10 +364,10 @@ export default function PatientCheckIn() {
                   onChange={(e) => updateData('temperature', e.target.value)}
                   className="max-w-[200px]"
                 />
-                <p className="text-sm text-muted-foreground">Plage normale : 36.1°C - 37.2°C</p>
+                <p className="text-sm text-muted-foreground">{t('patient.checkin.tempNormal')}</p>
                 {parseFloat(data.temperature) > 38 && (
                   <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
-                    Attention : température supérieure à 38°C
+                    {t('patient.checkin.tempAlert')}
                   </div>
                 )}
               </div>
@@ -372,7 +376,7 @@ export default function PatientCheckIn() {
               <div className="space-y-3">
                 <Label htmlFor="heartRate" className="text-base flex items-center gap-2">
                   <HeartPulse className="h-4 w-4" />
-                  Fréquence cardiaque (optionnel)
+                  {t('patient.checkin.heartRate')}
                 </Label>
                 <Input
                   id="heartRate"
@@ -382,7 +386,7 @@ export default function PatientCheckIn() {
                   onChange={(e) => updateData('heartRate', e.target.value)}
                   className="max-w-[200px]"
                 />
-                <p className="text-sm text-muted-foreground">Fréquence normale au repos : 60-100 bpm</p>
+                <p className="text-sm text-muted-foreground">{t('patient.checkin.hrNormal')}</p>
               </div>
             </>
           )}
@@ -391,7 +395,7 @@ export default function PatientCheckIn() {
             <>
               {/* Urination Problems */}
               <div className="space-y-3">
-                <Label className="text-base">Difficultés à uriner (dysurie) ?</Label>
+                <Label className="text-base">{t('patient.checkin.urinationProblems')}</Label>
                 <RadioGroup
                   value={data.urinationProblems || ''}
                   onValueChange={(value) => updateData('urinationProblems', value as 'none' | 'mild' | 'severe')}
@@ -399,22 +403,22 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="none" id="urination-none" />
-                    <Label htmlFor="urination-none" className="font-normal">Aucune</Label>
+                    <Label htmlFor="urination-none" className="font-normal">{t('patient.checkin.urinationProblemsList.none')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="mild" id="urination-mild" />
-                    <Label htmlFor="urination-mild" className="font-normal">Légères</Label>
+                    <Label htmlFor="urination-mild" className="font-normal">{t('patient.checkin.urinationProblemsList.mild')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="severe" id="urination-severe" />
-                    <Label htmlFor="urination-severe" className="font-normal">Sévères</Label>
+                    <Label htmlFor="urination-severe" className="font-normal">{t('patient.checkin.urinationProblemsList.severe')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Burning sensation */}
               <div className="space-y-3">
-                <Label className="text-base">Brûlures urinaires ?</Label>
+                <Label className="text-base">{t('patient.checkin.burning')}</Label>
                 <RadioGroup
                   value={data.urinationBurning || ''}
                   onValueChange={(value) => updateData('urinationBurning', value as 'yes' | 'no')}
@@ -422,18 +426,18 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="burning-yes" />
-                    <Label htmlFor="burning-yes" className="font-normal">Oui</Label>
+                    <Label htmlFor="burning-yes" className="font-normal">{t('patient.checkin.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="burning-no" />
-                    <Label htmlFor="burning-no" className="font-normal">Non</Label>
+                    <Label htmlFor="burning-no" className="font-normal">{t('patient.checkin.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Hematuria */}
               <div className="space-y-3">
-                <Label className="text-base">Sang dans les urines (hématurie) ?</Label>
+                <Label className="text-base">{t('patient.checkin.hematuria')}</Label>
                 <RadioGroup
                   value={data.hematuria || ''}
                   onValueChange={(value) => updateData('hematuria', value as 'yes' | 'no')}
@@ -441,18 +445,18 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="hematuria-yes" />
-                    <Label htmlFor="hematuria-yes" className="font-normal">Oui</Label>
+                    <Label htmlFor="hematuria-yes" className="font-normal">{t('patient.checkin.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="hematuria-no" />
-                    <Label htmlFor="hematuria-no" className="font-normal">Non</Label>
+                    <Label htmlFor="hematuria-no" className="font-normal">{t('patient.checkin.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Transit */}
               <div className="space-y-3">
-                <Label className="text-base">Comment est votre transit ?</Label>
+                <Label className="text-base">{t('patient.checkin.transit')}</Label>
                 <RadioGroup
                   value={data.transit || ''}
                   onValueChange={(value) => updateData('transit', value as 'normal' | 'constipation' | 'diarrhea')}
@@ -460,22 +464,22 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="normal" id="transit-normal" />
-                    <Label htmlFor="transit-normal" className="font-normal">Normal</Label>
+                    <Label htmlFor="transit-normal" className="font-normal">{t('patient.checkin.transitList.normal')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="constipation" id="transit-constipation" />
-                    <Label htmlFor="transit-constipation" className="font-normal">Constipation</Label>
+                    <Label htmlFor="transit-constipation" className="font-normal">{t('patient.checkin.transitList.constipation')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="diarrhea" id="transit-diarrhea" />
-                    <Label htmlFor="transit-diarrhea" className="font-normal">Diarrhée</Label>
+                    <Label htmlFor="transit-diarrhea" className="font-normal">{t('patient.checkin.transitList.diarrhea')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Gas emission */}
               <div className="space-y-3">
-                <Label className="text-base">Émission de gaz/selles ?</Label>
+                <Label className="text-base">{t('patient.checkin.gas')}</Label>
                 <RadioGroup
                   value={data.gasEmission || ''}
                   onValueChange={(value) => updateData('gasEmission', value as 'yes' | 'no')}
@@ -483,11 +487,11 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="gas-yes" />
-                    <Label htmlFor="gas-yes" className="font-normal">Oui</Label>
+                    <Label htmlFor="gas-yes" className="font-normal">{t('patient.checkin.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="gas-no" />
-                    <Label htmlFor="gas-no" className="font-normal">Non</Label>
+                    <Label htmlFor="gas-no" className="font-normal">{t('patient.checkin.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -498,7 +502,7 @@ export default function PatientCheckIn() {
             <>
               {/* Wound Concerns */}
               <div className="space-y-3">
-                <Label className="text-base">État de la cicatrice ?</Label>
+                <Label className="text-base">{t('patient.checkin.woundConcerns')}</Label>
                 <RadioGroup
                   value={data.woundConcerns || ''}
                   onValueChange={(value) => updateData('woundConcerns', value as 'none' | 'redness' | 'swelling' | 'fluid')}
@@ -506,40 +510,40 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="none" id="wound-none" />
-                    <Label htmlFor="wound-none" className="font-normal">Normal</Label>
+                    <Label htmlFor="wound-none" className="font-normal">{t('patient.checkin.woundList.none')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="redness" id="wound-redness" />
-                    <Label htmlFor="wound-redness" className="font-normal">Rougeur</Label>
+                    <Label htmlFor="wound-redness" className="font-normal">{t('patient.checkin.woundList.redness')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="swelling" id="wound-swelling" />
-                    <Label htmlFor="wound-swelling" className="font-normal">Gonflement</Label>
+                    <Label htmlFor="wound-swelling" className="font-normal">{t('patient.checkin.woundList.swelling')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="fluid" id="wound-fluid" />
-                    <Label htmlFor="wound-fluid" className="font-normal">Écoulement</Label>
+                    <Label htmlFor="wound-fluid" className="font-normal">{t('patient.checkin.woundList.fluid')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Wound Photo */}
               <div className="space-y-3">
-                <Label className="text-base">Photo de la cicatrice (optionnel)</Label>
+                <Label className="text-base">{t('patient.checkin.photoTitle')}</Label>
                 <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                   <Camera className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground mb-2">
-                    Prenez une photo de votre cicatrice
+                    {t('patient.checkin.photoDesc')}
                   </p>
                   <Button variant="outline" size="sm">
-                    Prendre une photo
+                    {t('patient.checkin.photoBtn')}
                   </Button>
                 </div>
               </div>
 
               {/* Medications */}
               <div className="space-y-3">
-                <Label className="text-base">Avez-vous pris vos médicaments ?</Label>
+                <Label className="text-base">{t('patient.checkin.medsTitle')}</Label>
                 <RadioGroup
                   value={data.medicationsTaken || ''}
                   onValueChange={(value) => updateData('medicationsTaken', value as 'yes' | 'no' | 'partial')}
@@ -547,25 +551,25 @@ export default function PatientCheckIn() {
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="meds-yes" />
-                    <Label htmlFor="meds-yes" className="font-normal">Oui, tous</Label>
+                    <Label htmlFor="meds-yes" className="font-normal">{t('patient.checkin.medsList.yes')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="partial" id="meds-partial" />
-                    <Label htmlFor="meds-partial" className="font-normal">Partiellement</Label>
+                    <Label htmlFor="meds-partial" className="font-normal">{t('patient.checkin.medsList.partial')}</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="meds-no" />
-                    <Label htmlFor="meds-no" className="font-normal">Non</Label>
+                    <Label htmlFor="meds-no" className="font-normal">{t('patient.checkin.medsList.no')}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Additional notes */}
               <div className="space-y-3">
-                <Label htmlFor="notes" className="text-base">Remarques supplémentaires</Label>
+                <Label htmlFor="notes" className="text-base">{t('patient.checkin.notesTitle')}</Label>
                 <Textarea
                   id="notes"
-                  placeholder="Décrivez tout autre symptôme ou préoccupation..."
+                  placeholder={t('patient.checkin.notesPlaceholder')}
                   value={data.additionalNotes}
                   onChange={(e) => updateData('additionalNotes', e.target.value)}
                   rows={3}
@@ -576,57 +580,57 @@ export default function PatientCheckIn() {
 
           {currentStep === 5 && (
             <div className="space-y-4">
-              <p className="text-muted-foreground">Vérifiez vos réponses avant d'envoyer :</p>
+              <p className="text-muted-foreground">{t('patient.checkin.summaryTitle')}</p>
 
               <div className="rounded-lg border border-border divide-y divide-border">
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Douleur (EVA)</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.pain')}</span>
                   <span className={`font-medium ${data.painLevel >= 7 ? 'text-destructive' : 'text-foreground'}`}>{data.painLevel}/10</span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Température</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.temp')}</span>
                   <span className={`font-medium ${parseFloat(data.temperature) > 38 ? 'text-destructive' : 'text-foreground'}`}>{data.temperature}°C</span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Nausées</span>
-                  <span className="font-medium text-foreground">{data.nausea === 'yes' ? 'Oui' : 'Non'}</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.nausea')}</span>
+                  <span className="font-medium text-foreground">{data.nausea === 'yes' ? t('patient.checkin.yes') : data.nausea === 'no' ? t('patient.checkin.no') : ''}</span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Vertiges</span>
-                  <span className="font-medium text-foreground">{data.dizziness === 'yes' ? 'Oui' : 'Non'}</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.dizziness')}</span>
+                  <span className="font-medium text-foreground">{data.dizziness === 'yes' ? t('patient.checkin.yes') : data.dizziness === 'no' ? t('patient.checkin.no') : ''}</span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Fatigue</span>
-                  <span className="font-medium text-foreground">{data.fatigue === 'mild' ? 'Légère' : data.fatigue === 'moderate' ? 'Modérée' : 'Sévère'}</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.fatigue')}</span>
+                  <span className="font-medium text-foreground">{data.fatigue ? t(`patient.checkin.fatigue.${data.fatigue}` as any) : ''}</span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Difficultés urinaires</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.urination')}</span>
                   <span className={`font-medium ${data.urinationProblems === 'severe' ? 'text-destructive' : 'text-foreground'}`}>
-                    {data.urinationProblems === 'none' ? 'Aucune' : data.urinationProblems === 'mild' ? 'Légères' : 'Sévères'}
+                    {data.urinationProblems ? t(`patient.checkin.urinationProblemsList.${data.urinationProblems}` as any) : ''}
                   </span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Hématurie</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.hematuria')}</span>
                   <span className={`font-medium ${data.hematuria === 'yes' ? 'text-warning' : 'text-foreground'}`}>
-                    {data.hematuria === 'yes' ? 'Oui' : 'Non'}
+                    {data.hematuria === 'yes' ? t('patient.checkin.yes') : data.hematuria === 'no' ? t('patient.checkin.no') : ''}
                   </span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Transit</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.transit')}</span>
                   <span className="font-medium text-foreground">
-                    {data.transit === 'normal' ? 'Normal' : data.transit === 'constipation' ? 'Constipation' : 'Diarrhée'}
+                    {data.transit ? t(`patient.checkin.transitList.${data.transit}` as any) : ''}
                   </span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">État cicatrice</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.wound')}</span>
                   <span className={`font-medium ${data.woundConcerns !== 'none' ? 'text-warning' : 'text-foreground'}`}>
-                    {data.woundConcerns === 'none' ? 'Normal' : data.woundConcerns === 'redness' ? 'Rougeur' : data.woundConcerns === 'swelling' ? 'Gonflement' : 'Écoulement'}
+                    {data.woundConcerns ? t(`patient.checkin.woundList.${data.woundConcerns}` as any) : ''}
                   </span>
                 </div>
                 <div className="p-3 flex justify-between">
-                  <span className="text-muted-foreground">Médicaments pris</span>
+                  <span className="text-muted-foreground">{t('patient.checkin.summaryFields.meds')}</span>
                   <span className={`font-medium ${data.medicationsTaken === 'no' ? 'text-destructive' : 'text-foreground'}`}>
-                    {data.medicationsTaken === 'yes' ? 'Oui, tous' : data.medicationsTaken === 'partial' ? 'Partiellement' : 'Non'}
+                    {data.medicationsTaken ? t(`patient.checkin.medsList.${data.medicationsTaken}` as any) : ''}
                   </span>
                 </div>
               </div>
@@ -636,10 +640,9 @@ export default function PatientCheckIn() {
                   <div className="flex items-start gap-3">
                     <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
                     <div>
-                      <p className="font-medium text-warning">Attention</p>
+                      <p className="font-medium text-warning">{t('patient.checkin.summaryWarnTitle')}</p>
                       <p className="text-sm text-muted-foreground">
-                        Certaines de vos réponses nécessitent une attention particulière.
-                        Votre équipe soignante sera alertée.
+                        {t('patient.checkin.summaryWarnDesc')}
                       </p>
                     </div>
                   </div>
@@ -658,18 +661,18 @@ export default function PatientCheckIn() {
           disabled={currentStep === 1}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Précédent
+          {t('patient.checkin.btnPrev')}
         </Button>
 
         {currentStep < 5 ? (
           <Button onClick={handleNext} disabled={!canProceed()}>
-            Suivant
+            {t('patient.checkin.btnNext')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
           <Button onClick={handleSubmit}>
             <Check className="mr-2 h-4 w-4" />
-            Envoyer le check-in
+            {t('patient.checkin.btnSubmit')}
           </Button>
         )}
       </div>

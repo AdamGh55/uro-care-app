@@ -26,16 +26,10 @@ import {
 } from "lucide-react"
 import { timelineTasks, type TimelineTask } from "@/lib/mock-data"
 import { TimelineService } from "@/lib/timeline-service"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 type FilterType = 'all' | 'due-soon' | 'completed'
 type PhaseType = TimelineTask['phase']
-
-const phaseLabels: Record<PhaseType, string> = {
-  'before': 'Avant l\'intervention',
-  'surgery-day': 'Jour J',
-  'after': 'Après l\'intervention',
-  'follow-up': 'Suivi',
-}
 
 const phaseColors: Record<PhaseType, string> = {
   'before': 'bg-blue-500',
@@ -45,6 +39,7 @@ const phaseColors: Record<PhaseType, string> = {
 }
 
 export default function PatientTimeline() {
+  const { t } = useLanguage()
   const [tasks, setTasks] = useState<TimelineTask[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<FilterType>('all')
@@ -125,8 +120,8 @@ export default function PatientTimeline() {
     <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">Recovery Timeline</h1>
-        <p className="text-muted-foreground">Track your progress through each phase of your recovery.</p>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('patient.timeline.title')}</h1>
+        <p className="text-muted-foreground">{t('patient.timeline.subtitle')}</p>
       </div>
 
       {/* Progress Card */}
@@ -134,9 +129,9 @@ export default function PatientTimeline() {
         <CardContent className="p-4 md:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Overall Progress</p>
+              <p className="text-sm text-muted-foreground">{t('patient.timeline.progressTitle')}</p>
               <p className="text-3xl font-bold text-foreground">{progress}%</p>
-              <p className="text-sm text-muted-foreground">{completedCount} of {totalCount} tasks completed</p>
+              <p className="text-sm text-muted-foreground">{t('patient.timeline.tasksCompleted').replace('{completed}', completedCount.toString()).replace('{total}', totalCount.toString())}</p>
             </div>
             <Progress value={progress} className="h-3 sm:w-48" />
           </div>
@@ -150,21 +145,21 @@ export default function PatientTimeline() {
           size="sm"
           onClick={() => setFilter('all')}
         >
-          All
+          {t('patient.timeline.filters.all')}
         </Button>
         <Button
           variant={filter === 'due-soon' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('due-soon')}
         >
-          Due Soon
+          {t('patient.timeline.filters.dueSoon')}
         </Button>
         <Button
           variant={filter === 'completed' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFilter('completed')}
         >
-          Completed
+          {t('patient.timeline.filters.completed')}
         </Button>
       </div>
 
@@ -187,7 +182,9 @@ export default function PatientTimeline() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`h-3 w-3 rounded-full ${phaseColors[phase]}`} />
-                    <CardTitle className="text-foreground">{phaseLabels[phase]}</CardTitle>
+                    <CardTitle className="text-foreground">
+                      {t(`patient.timeline.phases.${phase === 'surgery-day' ? 'surgeryDay' : phase === 'follow-up' ? 'followUp' : phase}` as any)}
+                    </CardTitle>
                     <Badge variant="secondary" className="text-xs">
                       {phaseCompleted}/{phaseTotal}
                     </Badge>
@@ -234,7 +231,7 @@ export default function PatientTimeline() {
                                       : ''
                                     }`}
                                 >
-                                  {task.status === 'done' ? 'Done' : task.status === 'in-progress' ? 'In Progress' : 'Not Started'}
+                                  {task.status === 'done' ? t('patient.timeline.status.done') : task.status === 'in-progress' ? t('patient.timeline.status.inProgress') : t('patient.timeline.status.notStarted')}
                                 </Badge>
                               </div>
                             </div>
@@ -250,7 +247,7 @@ export default function PatientTimeline() {
                                   }}
                                 >
                                   <Bell className="h-4 w-4 mr-1" />
-                                  Remind
+                                  {t('patient.timeline.buttons.remind')}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -260,7 +257,7 @@ export default function PatientTimeline() {
                                   }}
                                 >
                                   <Check className="h-4 w-4 mr-1" />
-                                  Done
+                                  {t('patient.timeline.buttons.done')}
                                 </Button>
                               </div>
                             )}
@@ -280,14 +277,14 @@ export default function PatientTimeline() {
       <Dialog open={reminderDialog.open} onOpenChange={(open) => setReminderDialog({ open, task: null })}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Set Reminder</DialogTitle>
+            <DialogTitle>{t('patient.timeline.reminder.title')}</DialogTitle>
             <DialogDescription>
-              Get notified about: {reminderDialog.task?.title}
+              {t('patient.timeline.reminder.desc').replace('{task}', reminderDialog.task?.title || '')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reminder-date">Reminder Date</Label>
+              <Label htmlFor="reminder-date">{t('patient.timeline.reminder.dateLabel')}</Label>
               <Input
                 id="reminder-date"
                 type="date"
@@ -295,7 +292,7 @@ export default function PatientTimeline() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="reminder-time">Reminder Time</Label>
+              <Label htmlFor="reminder-time">{t('patient.timeline.reminder.timeLabel')}</Label>
               <Input
                 id="reminder-time"
                 type="time"
@@ -305,10 +302,10 @@ export default function PatientTimeline() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setReminderDialog({ open: false, task: null })}>
-              Cancel
+              {t('patient.timeline.reminder.cancel')}
             </Button>
             <Button onClick={() => setReminderDialog({ open: false, task: null })}>
-              Set Reminder
+              {t('patient.timeline.reminder.setReminder')}
             </Button>
           </DialogFooter>
         </DialogContent>

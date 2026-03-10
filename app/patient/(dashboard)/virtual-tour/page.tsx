@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const tourSteps = [
   {
@@ -106,6 +107,7 @@ const tourSteps = [
 ];
 
 export default function VirtualTourPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -141,10 +143,10 @@ export default function VirtualTourPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">
-          Visite virtuelle du bloc
+          {t('patient.tour.title')}
         </h1>
         <p className="text-muted-foreground">
-          Découvrez le parcours patient le jour de votre intervention
+          {t('patient.tour.subtitle')}
         </p>
       </div>
 
@@ -153,10 +155,10 @@ export default function VirtualTourPage() {
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">
-              Étape {currentStep + 1} sur {tourSteps.length}
+              {t('patient.tour.stepXofY').replace('{step}', (currentStep + 1).toString()).replace('{total}', tourSteps.length.toString())}
             </span>
             <span className="text-sm text-muted-foreground">
-              {completedSteps.length} étapes vues
+              {t('patient.tour.stepsViewed').replace('{count}', completedSteps.length.toString())}
             </span>
           </div>
           <Progress value={progress} className="h-2" />
@@ -179,7 +181,7 @@ export default function VirtualTourPage() {
                 {currentTourStep.title}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Cliquez pour démarrer la vidéo
+                {t('patient.tour.clickToStart')}
               </p>
             </div>
           </div>
@@ -241,7 +243,7 @@ export default function VirtualTourPage() {
                   {currentTourStep.title}
                 </CardTitle>
                 <Badge variant="secondary" className="mt-1">
-                  Durée: {currentTourStep.duration}
+                  {t('patient.tour.durationLabel')} {currentTourStep.duration}
                 </Badge>
               </div>
             </div>
@@ -256,7 +258,7 @@ export default function VirtualTourPage() {
           <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
             <div className="flex items-center gap-2 mb-3">
               <Info className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Conseils pratiques</span>
+              <span className="font-medium text-sm">{t('patient.tour.practicalAdvice')}</span>
             </div>
             <ul className="space-y-2">
               {currentTourStep.tips.map((tip, index) => (
@@ -297,17 +299,17 @@ export default function VirtualTourPage() {
           className="gap-2 bg-transparent"
         >
           <ChevronLeft className="h-4 w-4" />
-          Précédent
+          {t('patient.tour.previous')}
         </Button>
 
         {currentStep === tourSteps.length - 1 ? (
           <Button onClick={handleComplete} className="gap-2">
             <CheckCircle2 className="h-4 w-4" />
-            J'ai compris
+            {t('patient.tour.understood')}
           </Button>
         ) : (
           <Button onClick={handleNext} className="gap-2">
-            Suivant
+            {t('patient.tour.next')}
             <ChevronRight className="h-4 w-4" />
           </Button>
         )}
